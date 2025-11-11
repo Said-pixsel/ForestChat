@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Избранное - ForestChat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --bg-primary: #0f1a0f;
+            --bg-secondary: #152a15;
+            --accent-green: #4CAF50;
+            --accent-orange: #FF6B35;
+            --text-primary: #ffffff;
+            --text-secondary: #b7e0b7;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .back-btn {
+            background: rgba(255, 107, 53, 0.2);
+            border: none;
+            color: var(--accent-orange);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 107, 53, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .favorite-item {
+            background: rgba(21, 42, 21, 0.8);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .favorite-item:hover {
+            background: rgba(76, 175, 80, 0.2);
+            transform: translateX(10px);
+        }
+
+        .favorite-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            color: var(--accent-orange);
+        }
+
+        .favorite-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .favorite-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .favorite-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            background: rgba(255, 107, 53, 0.2);
+            border: none;
+            color: var(--accent-orange);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="header-title">Избранное</h1>
+        </div>
+
+        <div id="favoritesList"></div>
+    </div>
+
+    <script>
+        let favorites = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadFavorites();
+        });
+
+        function loadFavorites() {
+            favorites = JSON.parse(localStorage.getItem('forestFavorites')) || [];
+            const container = document.getElementById('favoritesList');
+
+            if (favorites.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-star"></i>
+                        <div>Нет избранных сообщений</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+
+            favorites.forEach((fav, index) => {
+                const favItem = document.createElement('div');
+                favItem.className = 'favorite-item';
+                
+                favItem.innerHTML = `
+                    <div class="favorite-header">
+                        <div class="chat-name">${fav.chatName}</div>
+                        <div class="favorite-time">${fav.time}</div>
+                    </div>
+                    <div class="favorite-content">
+                        ${fav.text}
+                    </div>
+                    <div class="favorite-actions">
+                        <button class="action-btn" onclick="copyFavorite(${index})">
+                            <i class="fas fa-copy"></i> Копировать
+                        </button>
+                        <button class="action-btn" onclick="goToChat('${fav.chatId}')">
+                            <i class="fas fa-comment"></i> В чат
+                        </button>
+                        <button class="action-btn" onclick="removeFavorite(${index})">
+                            <i class="fas fa-trash"></i> Удалить
+                        </button>
+                    </div>
+                `;
+
+                container.appendChild(favItem);
+            });
+        }
+
+        function copyFavorite(index) {
+            if (favorites[index]) {
+                navigator.clipboard.writeText(favorites[index].text);
+                alert('Сообщение скопировано!');
+            }
+        }
+
+        function goToChat(chatId) {
+            localStorage.setItem('currentChat', chatId);
+            window.location.href = 'chat.html';
+        }
+
+        function removeFavorite(index) {
+            if (confirm('Удалить из избранного?')) {
+                favorites.splice(index, 1);
+                localStorage.setItem('forestFavorites', JSON.stringify(favorites));
+                loadFavorites();
+            }
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForestChat - Вход</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --bg-primary: #0f1a0f;
+            --bg-secondary: #152a15;
+            --accent-green: #4CAF50;
+            --accent-orange: #FF6B35;
+            --text-primary: #ffffff;
+            --text-secondary: #b7e0b7;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weather-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sun-rays {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 10%, rgba(255, 107, 53, 0.1) 0%, transparent 50%);
+            animation: raysRotate 20s infinite linear;
+        }
+
+        @keyframes raysRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .rain {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .raindrop {
+            position: absolute;
+            width: 2px;
+            height: 15px;
+            background: linear-gradient(transparent, #4A90E2);
+            animation: rainFall 1s linear infinite;
+        }
+
+        @keyframes rainFall {
+            0% { transform: translateY(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        .snow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: snowFall 5s linear infinite;
+        }
+
+        @keyframes snowFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: starTwinkle 3s infinite alternate;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .lightning {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            animation: lightningFlash 8s infinite;
+        }
+
+        @keyframes lightningFlash {
+            0%, 100% { opacity: 0; }
+            1% { opacity: 0.8; background: white; }
+            2% { opacity: 0; }
+        }
+
+        .login-container {
+            background: rgba(21, 42, 21, 0.95);
+            padding: 3rem;
+            border-radius: 25px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo i {
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(15, 26, 15, 0.8);
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .register-link {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .register-link a {
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="weather-effects" id="weatherEffects">
+        <div class="sun-rays"></div>
+    </div>
+
+    <div class="login-container">
+        <div class="logo">
+            <i class="fas fa-tree"></i>
+            <h1>ForestChat</h1>
+        </div>
+
+        <div class="input-group">
+            <input type="text" class="input-field" placeholder="Имя пользователя" id="username">
+        </div>
+
+        <div class="input-group">
+            <input type="password" class="input-field" placeholder="Пароль" id="password">
+        </div>
+
+        <button class="login-btn" onclick="login()">
+            <i class="fas fa-sign-in-alt"></i> Войти в лес
+        </button>
+
+        <div class="register-link">
+            Нет костра? <a href="#" onclick="register()">Разжечь новый</a>
+        </div>
+    </div>
+
+    <script>
+        function generateWeatherEffects(weatherType) {
+            const container = document.getElementById('weatherEffects');
+            container.innerHTML = '';
+
+            switch(weatherType) {
+                case 'sunny':
+                    container.innerHTML = '<div class="sun-rays"></div>';
+                    break;
+                case 'rainy':
+                    const rain = document.createElement('div');
+                    rain.className = 'rain';
+                    for(let i = 0; i < 60; i++) {
+                        const raindrop = document.createElement('div');
+                        raindrop.className = 'raindrop';
+                        raindrop.style.left = Math.random() * 100 + '%';
+                        raindrop.style.animationDelay = Math.random() * 2 + 's';
+                        rain.appendChild(raindrop);
+                    }
+                    container.appendChild(rain);
+                    break;
+                case 'snowy':
+                    const snow = document.createElement('div');
+                    snow.className = 'snow';
+                    for(let i = 0; i < 40; i++) {
+                        const snowflake = document.createElement('div');
+                        snowflake.className = 'snowflake';
+                        snowflake.style.left = Math.random() * 100 + '%';
+                        snowflake.style.width = Math.random() * 4 + 2 + 'px';
+                        snowflake.style.height = snowflake.style.width;
+                        snowflake.style.animationDelay = Math.random() * 5 + 's';
+                        snow.appendChild(snowflake);
+                    }
+                    container.appendChild(snow);
+                    break;
+                case 'night':
+                    const stars = document.createElement('div');
+                    stars.className = 'stars';
+                    for(let i = 0; i < 50; i++) {
+                        const star = document.createElement('div');
+                        star.className = 'star';
+                        star.style.left = Math.random() * 100 + '%';
+                        star.style.top = Math.random() * 100 + '%';
+                        star.style.width = Math.random() * 3 + 1 + 'px';
+                        star.style.height = star.style.width;
+                        star.style.animationDelay = Math.random() * 3 + 's';
+                        stars.appendChild(star);
+                    }
+                    container.appendChild(stars);
+                    break;
+                case 'stormy':
+                    const lightning = document.createElement('div');
+                    lightning.className = 'lightning';
+                    container.appendChild(lightning);
+                    break;
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if(username && password) {
+                localStorage.setItem('currentUser', username);
+                window.location.href = 'chats.html';
+            } else {
+                alert('Заполните все поля!');
+            }
+        }
+
+        function register() {
+            alert('Регистрация - просто введите желаемое имя пользователя и пароль!');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const weatherTypes = ['sunny', 'rainy', 'snowy', 'night', 'stormy'];
+            const randomWeather = weatherTypes[Math.floor(Math.random() * weatherTypes.length)];
+            generateWeatherEffects(randomWeather);
+        });
+    </script>
+</body>
+</html>

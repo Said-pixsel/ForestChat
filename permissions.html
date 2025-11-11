@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Разрешения - ForestChat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --bg-primary: #0f1a0f;
+            --bg-secondary: #152a15;
+            --accent-orange: #FF6B35;
+            --accent-red: #FF4B2B;
+            --accent-yellow: #FFA62B;
+            --accent-green: #4CAF50;
+            --text-primary: #ffffff;
+            --text-secondary: #b7e0b7;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .permissions-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .back-btn {
+            background: rgba(255, 107, 53, 0.2);
+            border: none;
+            color: var(--accent-orange);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 107, 53, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .permissions-card {
+            background: rgba(21, 42, 21, 0.95);
+            border-radius: 25px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .permission-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.2rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .permission-item:last-child {
+            border-bottom: none;
+        }
+
+        .permission-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .permission-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(255, 107, 53, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: var(--accent-orange);
+        }
+
+        .permission-text h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+
+        .permission-text p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 107, 53, 0.3);
+            border-radius: 34px;
+            transition: .4s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background: var(--accent-orange);
+            border-radius: 50%;
+            transition: .4s;
+        }
+
+        input:checked + .toggle-slider {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+            background: var(--accent-green);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem 0;
+            color: var(--accent-orange);
+            border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .permission-status {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+        }
+        
+        .status-granted {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+        
+        .status-denied {
+            background: rgba(255, 75, 43, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .test-button {
+            background: rgba(255, 107, 53, 0.2);
+            border: 1px solid var(--accent-orange);
+            color: var(--accent-orange);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .test-button:hover {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .status-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: var(--accent-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="permissions-container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="header-title">Разрешения леса</h1>
+        </div>
+
+        <div class="permissions-card">
+            <h2 class="section-title">
+                <i class="fas fa-phone-alt"></i> Голос и видео
+            </h2>
+
+            <div class="permission-item">
+                <div class="permission-info">
+                    <div class="permission-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Доступ к микрофону</h3>
+                        <p>Голосовые сообщения и звонки</p>
+                        <div class="permission-status" id="microphoneStatus">
+                            Проверка...
+                        </div>
+                        <button class="test-button" onclick="testMicrophone()">
+                            <i class="fas fa-test"></i> Проверить микрофон
+                        </button>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="microphoneToggle" onchange="toggleMicrophone()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="permission-item">
+                <div class="permission-info">
+                    <div class="permission-icon">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Доступ к камере</h3>
+                        <p>Видеозвонки и фото</p>
+                        <div class="permission-status" id="cameraStatus">
+                            Проверка...
+                        </div>
+                        <button class="test-button" onclick="testCamera()">
+                            <i class="fas fa-test"></i> Проверить камеру
+                        </button>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="cameraToggle" onchange="toggleCamera()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="permission-item">
+                <div class="permission-info">
+                    <div class="permission-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Воспроизведение звука</h3>
+                        <p>Уведомления и медиа</p>
+                        <div class="permission-status status-granted" id="audioStatus">
+                            Всегда разрешено ✅
+                        </div>
+                        <button class="test-button" onclick="testAudio()">
+                            <i class="fas fa-test"></i> Тест звука
+                        </button>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked disabled>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="permissions-card">
+            <h2 class="section-title">
+                <i class="fas fa-file-alt"></i> Файлы и медиа
+            </h2>
+
+            <div class="permission-item">
+                <div class="permission-info">
+                    <div class="permission-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Загрузка файлов</h3>
+                        <p>Документы и медиафайлы</p>
+                        <div class="permission-status status-granted">
+                            Разрешено ✅
+                        </div>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked disabled>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="permission-item">
+                <div class="permission-info">
+                    <div class="permission-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="permission-text">
+                        <h3>Музыкальная библиотека</h3>
+                        <p>Доступ к аудиофайлам</p>
+                        <div class="permission-status status-granted">
+                            Разрешено ✅
+                        </div>
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked disabled>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPermissions();
+        });
+
+        async function checkPermissions() {
+            try {
+                const micPermission = await navigator.permissions.query({ name: 'microphone' });
+                updatePermissionStatus('microphone', micPermission.state);
+                
+                micPermission.onchange = () => {
+                    updatePermissionStatus('microphone', micPermission.state);
+                };
+            } catch (error) {
+                document.getElementById('microphoneStatus').className = 'permission-status status-denied';
+                document.getElementById('microphoneStatus').textContent = 'Ошибка проверки';
+            }
+
+            try {
+                const cameraPermission = await navigator.permissions.query({ name: 'camera' });
+                updatePermissionStatus('camera', cameraPermission.state);
+                
+                cameraPermission.onchange = () => {
+                    updatePermissionStatus('camera', cameraPermission.state);
+                };
+            } catch (error) {
+                document.getElementById('cameraStatus').className = 'permission-status status-denied';
+                document.getElementById('cameraStatus').textContent = 'Ошибка проверки';
+            }
+        }
+
+        function updatePermissionStatus(permission, state) {
+            const statusElement = document.getElementById(permission + 'Status');
+            const toggleElement = document.getElementById(permission + 'Toggle');
+            
+            switch(state) {
+                case 'granted':
+                    statusElement.className = 'permission-status status-granted';
+                    statusElement.textContent = 'Разрешено ✅';
+                    toggleElement.checked = true;
+                    break;
+                case 'denied':
+                    statusElement.className = 'permission-status status-denied';
+                    statusElement.textContent = 'Заблокировано ❌';
+                    toggleElement.checked = false;
+                    break;
+                case 'prompt':
+                    statusElement.className = 'permission-status';
+                    statusElement.textContent = 'Запрос ожидает... ⏳';
+                    toggleElement.checked = false;
+                    break;
+            }
+        }
+
+        async function toggleMicrophone() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                updatePermissionStatus('microphone', 'granted');
+                stream.getTracks().forEach(track => track.stop());
+            } catch (error) {
+                updatePermissionStatus('microphone', 'denied');
+            }
+        }
+
+        async function toggleCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                updatePermissionStatus('camera', 'granted');
+                stream.getTracks().forEach(track => track.stop());
+            } catch (error) {
+                updatePermissionStatus('camera', 'denied');
+            }
+        }
+
+        async function testMicrophone() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const status = document.getElementById('microphoneStatus');
+                status.innerHTML = '🎤 Микрофон работает! Говорите...';
+                
+                setTimeout(() => {
+                    stream.getTracks().forEach(track => track.stop());
+                    status.textContent = 'Тест завершен ✅';
+                }, 3000);
+                
+            } catch (error) {
+                document.getElementById('microphoneStatus').textContent = '❌ Микрофон недоступен';
+            }
+        }
+
+        async function testCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                document.getElementById('cameraStatus').textContent = '📹 Камера работает!';
+                
+                setTimeout(() => {
+                    stream.getTracks().forEach(track => track.stop());
+                    document.getElementById('cameraStatus').textContent = 'Тест завершен ✅';
+                }, 3000);
+                
+            } catch (error) {
+                document.getElementById('cameraStatus').textContent = '❌ Камера недоступен';
+            }
+        }
+
+        function testAudio() {
+            const audioContext = new AudioContext();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 440;
+            gainNode.gain.value = 0.1;
+            
+            oscillator.start();
+            setTimeout(() => {
+                oscillator.stop();
+                document.getElementById('audioStatus').textContent = '🔊 Звук работает!';
+            }, 500);
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>

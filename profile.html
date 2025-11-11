@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - ForestChat</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --bg-primary: #0f1a0f;
+            --bg-secondary: #152a15;
+            --accent-green: #4CAF50;
+            --accent-orange: #FF6B35;
+            --accent-red: #FF4B2B;
+            --accent-yellow: #FFA62B;
+            --text-primary: #ffffff;
+            --text-secondary: #b7e0b7;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .profile-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .back-btn {
+            background: rgba(255, 107, 53, 0.2);
+            border: none;
+            color: var(--accent-orange);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 107, 53, 0.3);
+            transform: translateX(-5px);
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .profile-card {
+            background: rgba(21, 42, 21, 0.95);
+            border-radius: 25px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-preview {
+            width: 140px;
+            height: 140px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(255, 166, 43, 0.5);
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.3);
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .upload-btn {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid var(--accent-green);
+            color: var(--accent-green);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .upload-btn:hover {
+            background: var(--accent-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-label i {
+            color: var(--accent-orange);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(15, 26, 15, 0.8);
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-orange));
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .save-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .save-btn:hover::before {
+            left: 100%;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            display: none;
+            text-align: center;
+        }
+
+        .status.success {
+            background: rgba(255, 166, 43, 0.1);
+            border: 1px solid rgba(255, 166, 43, 0.3);
+            color: var(--accent-yellow);
+        }
+
+        .status.error {
+            background: rgba(255, 75, 43, 0.1);
+            border: 1px solid rgba(255, 75, 43, 0.3);
+            color: var(--accent-red);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent-orange);
+            border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid var(--accent-green);
+            color: var(--text-primary);
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-green);
+            transform: translateY(-2px);
+        }
+
+        .music-player-btn {
+            background: rgba(255, 107, 53, 0.2);
+            border: 2px solid var(--accent-orange);
+        }
+
+        .music-player-btn:hover {
+            background: var(--accent-orange);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 class="header-title">Лесной профиль</h1>
+        </div>
+
+        <div class="profile-card">
+            <div class="avatar-section">
+                <div class="avatar-preview">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="avatar-upload">
+                    <button class="upload-btn" onclick="document.getElementById('avatarInput').click()">
+                        <i class="fas fa-camera"></i> Сменить фото
+                    </button>
+                    <button class="upload-btn">
+                        <i class="fas fa-mountain"></i> Тема кемпинга
+                    </button>
+                </div>
+                <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="fas fa-user"></i> Имя в лесу
+                </label>
+                <input type="text" class="input-field" placeholder="Введите лесное имя" id="displayName">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="fas fa-campground"></i> Статус у костра
+                </label>
+                <input type="text" class="input-field" placeholder="Чем занимаетесь у костра?" id="userStatus">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">
+                    <i class="fas fa-envelope"></i> Электронная почта
+                </label>
+                <input type="email" class="input-field" placeholder="your@email.com" id="userEmail">
+            </div>
+
+            <button class="save-btn" onclick="saveProfile()">
+                <i class="fas fa-save"></i> Сохранить настройки
+            </button>
+
+            <div id="statusMessage" class="status"></div>
+        </div>
+
+        <div class="profile-card">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i> Статистика леса
+            </h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="messagesCount">0</div>
+                    <div class="stat-label">Сообщений</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="musicCount">0</div>
+                    <div class="stat-label">Треков</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="favoritesCount">0</div>
+                    <div class="stat-label">В избранном</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="chatsCount">0</div>
+                    <div class="stat-label">Чатов</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="permissions.html" class="nav-btn">
+                <i class="fas fa-shield-alt"></i> Разрешения
+            </a>
+            <button class="nav-btn music-player-btn" onclick="openMusicPlayer()">
+                <i class="fas fa-music"></i> Музыкальный плеер
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        function loadProfile() {
+            const profile = JSON.parse(localStorage.getItem('forestProfile')) || {
+                displayName: 'Лесной странник',
+                status: 'Греюсь у костра',
+                email: 'wanderer@forestchat.com'
+            };
+
+            document.getElementById('displayName').value = profile.displayName;
+            document.getElementById('userStatus').value = profile.status;
+            document.getElementById('userEmail').value = profile.email;
+
+            updateStats();
+        }
+
+        function saveProfile() {
+            const profile = {
+                displayName: document.getElementById('displayName').value,
+                status: document.getElementById('userStatus').value,
+                email: document.getElementById('userEmail').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('forestProfile', JSON.stringify(profile));
+            
+            const status = document.getElementById('statusMessage');
+            status.style.display = 'block';
+            status.className = 'status success';
+            status.innerHTML = '<i class="fas fa-check-circle"></i> Настройки костра сохранены!';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        function updateStats() {
+            const chats = JSON.parse(localStorage.getItem('forestChats')) || [];
+            const favorites = JSON.parse(localStorage.getItem('forestFavorites')) || [];
+            const music = JSON.parse(localStorage.getItem('forestMusic')) || [];
+            
+            let totalMessages = 0;
+            chats.forEach(chat => {
+                const messages = JSON.parse(localStorage.getItem(`forestMessages_${chat.id}`)) || [];
+                totalMessages += messages.length;
+            });
+
+            document.getElementById('messagesCount').textContent = totalMessages;
+            document.getElementById('musicCount').textContent = music.length;
+            document.getElementById('favoritesCount').textContent = favorites.length;
+            document.getElementById('chatsCount').textContent = chats.length;
+        }
+
+        function openMusicPlayer() {
+            localStorage.setItem('currentChat', 'radio');
+            window.location.href = 'chat.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfile();
+            
+            document.getElementById('avatarInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const avatarPreview = document.querySelector('.avatar-preview');
+                        avatarPreview.innerHTML = `<img src="${e.target.result}" alt="Avatar">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
